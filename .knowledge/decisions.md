@@ -39,3 +39,4 @@
 - Key binding through Fabric's key binding API, not a mixin into `Options` (upstream's cause of corrupted `options.txt`).
 - Per-entity-type switches exist in the config file only (`disabled_entity_types`); no searchable list screen in 1.0.0.
 - The engine keeps ticking while the game is paused: the options screen pauses single player, and option changes must show at once (corrects the first instruction for T3).
+- No performance claim against LambDynamicLights is made in README, description or report unless a measurement supports it: the first quick comparison showed no advantage and a deficit with 256 moving lights.

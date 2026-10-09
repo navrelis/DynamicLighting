@@ -31,3 +31,4 @@ Download LambDynamicLights (branch `1.21`) and make it work in the NytheriaDevel
 
 ## Owner, during the work (2026-10-09)
 - Wants to be told how much better the mod is than LambDynamicLights. Lead's answer: design comparison now; a measured comparison needs the official jar for measurement-only runs, which needs the owner's OK (asked, open).
+- 2026-10-09 "measure it please": owner allows the official LambDynamicLights jar for measurement runs. Then: one quick comparison with an easy test and an extreme stress test for the three arms (no mod, ours, LambDynamicLights).
