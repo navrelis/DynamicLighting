@@ -1,6 +1,7 @@
 package navrelis.dynamiclighting.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -14,16 +15,24 @@ import org.junit.jupiter.api.Test;
 class RebuildQueueTest {
 	private final RebuildQueue queue = new RebuildQueue();
 	private final List<int[]> marked = new ArrayList<>();
-	private final RebuildQueue.SectionMarker marker = (x, y, z) -> this.marked.add(new int[] {x, y, z});
+	/**
+	 * Sections the fake renderer cannot take a request for yet, like a section under Sodium whose
+	 * first build has not been applied.
+	 */
+	private final Set<String> unbuilt = new HashSet<>();
+	private final RebuildQueue.SectionMarker marker = (x, y, z) -> {
+		this.marked.add(new int[] {x, y, z});
+		return !this.unbuilt.contains(x + "," + y + "," + z);
+	};
 
 	@Test
 	void sectionIsQueuedOnceHoweverOftenItIsRequested() {
 		this.queue.add(1, 2, 3);
 		this.queue.add(1, 2, 3);
-		this.queue.addBox(24.0, 40.0, 56.0, 8.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-		this.queue.addBox(24.0, 40.0, 56.0, 8.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-		// A second light whose box overlaps the first one's sections.
-		this.queue.addBox(30.0, 40.0, 56.0, 8.0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		this.queue.addReach(24.0, 40.0, 56.0, 7.5, 0.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		this.queue.addReach(24.0, 40.0, 56.0, 7.5, 0.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		// A second light whose reach overlaps the first one's sections.
+		this.queue.addReach(30.0, 40.0, 56.0, 7.5, 0.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
 		assertEquals(2, this.queue.size());
 		assertEquals(2, this.queue.flush(0, 0, 0, 100, this.marker));
@@ -170,6 +179,169 @@ class RebuildQueueTest {
 
 		assertEquals(3, this.queue.flush(1_874_000, 5, -1_874_000, 64, this.marker));
 		assertEquals(List.of("1874999,19,-1875000", "0,0,0", "-1875000,-4,1874999"), this.markedList());
+	}
+
+	// Requests the renderer cannot take yet
+
+	@Test
+	void requestTakenAtOnceIsNotOfferedAgain() {
+		this.queue.add(1, 0, 0);
+
+		assertEquals(1, this.queue.flush(0, 0, 0, 64, this.marker));
+		assertEquals(List.of("1,0,0"), this.markedList());
+		assertEquals(0, this.queue.retrying());
+		assertTrue(this.queue.isEmpty());
+
+		for (int tick = 0; tick < 5; tick++) {
+			assertEquals(0, this.queue.flush(0, 0, 0, 64, this.marker));
+		}
+
+		assertEquals(1, this.marked.size());
+	}
+
+	@Test
+	void requestIsOfferedAgainInEveryFlushUntilItIsTaken() {
+		this.unbuilt.add("1,0,0");
+		this.queue.add(1, 0, 0);
+		this.queue.add(2, 0, 0);
+
+		assertEquals(2, this.queue.flush(0, 0, 0, 64, this.marker));
+		assertEquals(List.of("1,0,0", "2,0,0"), this.markedList());
+		assertEquals(0, this.queue.size());
+		assertEquals(1, this.queue.retrying());
+		assertFalse(this.queue.isEmpty());
+
+		// Five ticks pass before the first build of the section lands.
+		for (int tick = 0; tick < 5; tick++) {
+			this.marked.clear();
+			assertEquals(0, this.queue.flush(0, 0, 0, 64, this.marker));
+			assertEquals(List.of("1,0,0"), this.markedList());
+			assertEquals(1, this.queue.retrying());
+		}
+
+		this.unbuilt.clear();
+		this.marked.clear();
+		assertEquals(0, this.queue.flush(0, 0, 0, 64, this.marker));
+		assertEquals(List.of("1,0,0"), this.markedList());
+		assertEquals(0, this.queue.retrying());
+		assertTrue(this.queue.isEmpty());
+
+		this.marked.clear();
+		assertEquals(0, this.queue.flush(0, 0, 0, 64, this.marker));
+		assertTrue(this.marked.isEmpty());
+	}
+
+	@Test
+	void requestThatIsNeverTakenIsGivenUpAtTheBound() {
+		this.unbuilt.add("1,0,0");
+		this.queue.add(1, 0, 0);
+		this.queue.flush(0, 0, 0, 64, this.marker);
+
+		for (int flush = 1; flush <= RebuildQueue.RETRY_FLUSHES; flush++) {
+			assertEquals(1, this.queue.retrying(), "given up before flush " + flush);
+			this.queue.flush(0, 0, 0, 64, this.marker);
+		}
+
+		// Handed out once, offered again 40 times, then forgotten.
+		assertEquals(1 + RebuildQueue.RETRY_FLUSHES, this.marked.size());
+		assertEquals(0, this.queue.retrying());
+		assertTrue(this.queue.isEmpty());
+
+		this.queue.flush(0, 0, 0, 64, this.marker);
+		assertEquals(1 + RebuildQueue.RETRY_FLUSHES, this.marked.size());
+	}
+
+	@Test
+	void sectionsThatNeverGetBuiltDoNotPileUp() {
+		// A light walks through sections the renderer never builds, for example solid rock.
+		for (int tick = 0; tick < 500; tick++) {
+			this.unbuilt.add(tick + ",0,0");
+			this.queue.add(tick, 0, 0);
+			this.queue.flush(tick, 0, 0, 64, this.marker);
+
+			assertTrue(this.queue.retrying() <= RebuildQueue.RETRY_FLUSHES + 1, "retrying " + this.queue.retrying() + " in tick " + tick);
+		}
+
+		for (int tick = 0; tick <= RebuildQueue.RETRY_FLUSHES; tick++) {
+			this.queue.flush(0, 0, 0, 64, this.marker);
+		}
+
+		assertTrue(this.queue.isEmpty());
+	}
+
+	@Test
+	void offeringAgainDoesNotUseTheBudget() {
+		for (int x = 1; x <= 10; x++) {
+			this.unbuilt.add(x + ",0,0");
+			this.queue.add(x, 0, 0);
+		}
+
+		assertEquals(10, this.queue.flush(0, 0, 0, 64, this.marker));
+		assertEquals(10, this.queue.retrying());
+
+		for (int x = 20; x < 25; x++) {
+			this.queue.add(x, 0, 0);
+		}
+
+		// Budget 2: the ten are offered again and two new requests still get through.
+		this.marked.clear();
+		assertEquals(2, this.queue.flush(0, 0, 0, 2, this.marker));
+		assertEquals(12, this.marked.size());
+		assertTrue(this.markedSet().containsAll(Set.of("20,0,0", "21,0,0")));
+		assertEquals(3, this.queue.size());
+		assertEquals(10, this.queue.retrying());
+
+		// Even a flush without any budget offers them again.
+		this.marked.clear();
+		assertEquals(0, this.queue.flush(0, 0, 0, 0, this.marker));
+		assertEquals(10, this.marked.size());
+		assertEquals(3, this.queue.size());
+	}
+
+	@Test
+	void newRequestForAnUnsettledSectionRenewsItInsteadOfQueueingItTwice() {
+		this.unbuilt.add("1,0,0");
+		this.queue.add(1, 0, 0);
+		this.queue.flush(0, 0, 0, 64, this.marker);
+
+		for (int flush = 0; flush < 30; flush++) {
+			this.queue.flush(0, 0, 0, 64, this.marker);
+		}
+
+		// The light changes again while the section is still not built.
+		this.queue.add(1, 0, 0);
+		this.queue.addReach(24.0, 8.0, 8.0, 7.5, 0.5, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		assertEquals(0, this.queue.size());
+		assertEquals(1, this.queue.retrying());
+
+		this.marked.clear();
+
+		for (int flush = 1; flush <= RebuildQueue.RETRY_FLUSHES; flush++) {
+			assertEquals(1, this.queue.retrying(), "given up before flush " + flush);
+			this.queue.flush(0, 0, 0, 64, this.marker);
+		}
+
+		// Once per flush, and for the full time again.
+		assertEquals(RebuildQueue.RETRY_FLUSHES, this.marked.size());
+		assertTrue(this.queue.isEmpty());
+	}
+
+	@Test
+	void clearDropsUnsettledRequestsToo() {
+		this.unbuilt.add("1,0,0");
+		this.queue.add(1, 0, 0);
+		this.queue.add(2, 0, 0);
+		this.queue.flush(0, 0, 0, 1, this.marker);
+		assertEquals(1, this.queue.size());
+		assertEquals(1, this.queue.retrying());
+
+		this.queue.clear();
+		this.marked.clear();
+
+		assertEquals(0, this.queue.retrying());
+		assertTrue(this.queue.isEmpty());
+		assertEquals(0, this.queue.flush(0, 0, 0, 64, this.marker));
+		assertTrue(this.marked.isEmpty());
 	}
 
 	private static long distanceSquared(int[] section, int x, int y, int z) {

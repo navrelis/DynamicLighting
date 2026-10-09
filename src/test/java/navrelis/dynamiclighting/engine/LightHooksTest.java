@@ -11,9 +11,14 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.Bootstrap;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.LightLayer;
@@ -159,21 +164,100 @@ class LightHooksTest {
 
 	@Test
 	void entityLightIsTheWholeLevelMaximum() {
-		assertEquals(11, LightHooks.entityBlockLight(3, NEAR));
-		assertEquals(13, LightHooks.entityBlockLight(13, NEAR));
-		assertEquals(14, LightHooks.entityBlockLight(0, AT_LIGHT));
-		assertEquals(15, LightHooks.entityBlockLight(15, AT_LIGHT));
-		assertEquals(3, LightHooks.entityBlockLight(3, FAR));
+		Entity near = entityWithEyesAt(1.5, 64.5, 1.5);
+		Entity atLight = entityWithEyesAt(0.5, 64.5, 0.5);
+		Entity far = entityWithEyesAt(40.5, 64.5, 0.5);
+
+		assertEquals(11, LightHooks.entityBlockLight(3, near));
+		assertEquals(13, LightHooks.entityBlockLight(13, near));
+		assertEquals(14, LightHooks.entityBlockLight(0, atLight));
+		assertEquals(15, LightHooks.entityBlockLight(15, atLight));
+		assertEquals(3, LightHooks.entityBlockLight(3, far));
 		// 14 - 2 * sqrt(5) = 9.53: nearer to 10 than to 9.
-		assertEquals(10, LightHooks.entityBlockLight(0, new BlockPos(1, 64, 2)));
+		assertEquals(10, LightHooks.entityBlockLight(0, entityWithEyesAt(1.5, 64.5, 2.5)));
 
 		LightSnapshot.publish(LightSnapshot.EMPTY);
-		assertEquals(3, LightHooks.entityBlockLight(3, NEAR));
-		assertEquals(0, LightHooks.entityBlockLight(0, AT_LIGHT));
+		assertEquals(3, LightHooks.entityBlockLight(3, near));
+		assertEquals(0, LightHooks.entityBlockLight(0, atLight));
+	}
+
+	@Test
+	void entityIsLitAtItsEyesNotAtTheCentreOfItsBlock() {
+		// A light that is not in the middle of its block, as a walking holder's is most of the time.
+		LightSnapshot.publish(new SnapshotBuilder().build(
+			1, new double[] {0.9}, new double[] {64.9}, new double[] {0.9}, new int[] {14}, 2.0
+		));
+
+		// The centre of the block is 0.69 blocks from the light: 12.6, which is level 13.
+		assertEquals(13, PackedLight.roundToLevel(LightSnapshot.current().lightAt(0, 64, 0)));
+
+		// The holder's eyes are where the light is, so it is rendered with all it emits.
+		assertEquals(14, LightHooks.entityBlockLight(0, entityWithEyesAt(0.9, 64.9, 0.9)));
+		// At the other side of the same block, 0.8 blocks along one axis: 12.4.
+		assertEquals(12, LightHooks.entityBlockLight(0, entityWithEyesAt(0.1, 64.9, 0.9)));
+		// Someone standing one block further.
+		assertEquals(12, LightHooks.entityBlockLight(0, entityWithEyesAt(1.9, 64.9, 0.9)));
+		// Across the border of the section, at negative coordinates.
+		assertEquals(12, LightHooks.entityBlockLight(0, entityWithEyesAt(-0.1, 64.9, 0.9)));
+		assertEquals(12, LightHooks.entityBlockLight(0, entityWithEyesAt(0.9, 63.9, 0.9)));
+	}
+
+	@Test
+	void entityRendererHandsItsEntityToTheHook() throws ReflectiveOperationException {
+		TestRenderer renderer = new TestRenderer();
+		Entity holder = entityWithEyesAt(0.5, 64.5, 0.5);
+		Entity bystander = entityWithEyesAt(1.5, 64.5, 1.5);
+
+		// The handler as it was merged into the real class, called on a real renderer. The block
+		// position the renderer passes along is far from the light; only the entity counts.
+		Method handler = Arrays.stream(EntityRenderer.class.getDeclaredMethods())
+			.filter(method -> method.getName().contains("dynamiclighting$addDynamicLight"))
+			.findFirst().orElseThrow();
+		handler.setAccessible(true);
+
+		assertEquals(14, handler.invoke(renderer, 3, holder));
+		assertEquals(11, handler.invoke(renderer, 3, bystander));
+		assertEquals(15, handler.invoke(renderer, 15, bystander));
+
+		// The hooked method itself runs. Without a world only its burning branch can: 15, which the
+		// hook leaves alone.
+		bystander.setRemainingFireTicks(100);
+		assertEquals(15, renderer.blockLight(bystander, FAR));
 	}
 
 	private static boolean hasHandler(Class<?> target) {
 		return Arrays.stream(target.getDeclaredMethods()).map(Method::getName).anyMatch(name -> name.contains("dynamiclighting$addDynamicLight"));
+	}
+
+	/**
+	 * An entity that can exist without a world, placed so that its eyes are at the given point.
+	 */
+	private static Entity entityWithEyesAt(double x, double eyeY, double z) {
+		ArmorStand stand = new ArmorStand(EntityType.ARMOR_STAND, null);
+		stand.setPos(x, eyeY - stand.getEyeHeight(), z);
+
+		assertEquals(x, stand.getX());
+		assertEquals(eyeY, stand.getEyeY(), 1.0e-9);
+		assertEquals(z, stand.getZ());
+		return stand;
+	}
+
+	/**
+	 * A real entity renderer. It needs no game behind it as long as nothing is drawn.
+	 */
+	private static final class TestRenderer extends EntityRenderer<Entity> {
+		private TestRenderer() {
+			super(new EntityRendererProvider.Context(null, null, null, null, null, null, null));
+		}
+
+		private int blockLight(Entity entity, BlockPos pos) {
+			return this.getBlockLightLevel(entity, pos);
+		}
+
+		@Override
+		public ResourceLocation getTextureLocation(Entity entity) {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	/**

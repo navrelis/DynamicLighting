@@ -26,8 +26,21 @@ public final class Luminance {
 	/** The applied data under the current options. Client thread only, like everything below. */
 	private static LightRules rules;
 	private static boolean failureLogged;
+	/** What {@link #ofEntity} last swallowed, for tests: to them "emits nothing" and "failed" look the same. */
+	private static Throwable lastFailure;
 
 	private Luminance() {
+	}
+
+	/**
+	 * Returns what {@link #ofEntity} swallowed since the last call, and forgets it.
+	 *
+	 * @return the most recent failure, {@code null} if there was none
+	 */
+	static Throwable takeFailure() {
+		Throwable failure = lastFailure;
+		lastFailure = null;
+		return failure;
 	}
 
 	/**
@@ -53,6 +66,8 @@ public final class Luminance {
 		try {
 			return compute(entity);
 		} catch (Throwable t) {
+			lastFailure = t;
+
 			if (!failureLogged) {
 				failureLogged = true;
 				DynamicLighting.LOGGER.error(

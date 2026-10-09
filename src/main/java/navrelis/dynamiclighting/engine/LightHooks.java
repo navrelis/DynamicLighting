@@ -2,6 +2,7 @@ package navrelis.dynamiclighting.engine;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -48,9 +49,13 @@ public final class LightHooks {
 	}
 
 	/**
-	 * Raises the block light level an entity is rendered with to the dynamic light at {@code pos}.
+	 * Raises the block light level an entity is rendered with to the dynamic light at its eyes.
+	 * <p>
+	 * That is the point the engine places the entity's own light at, so an entity that emits light is
+	 * rendered with what it emits, and a held light does not flicker as its holder walks through the
+	 * block grid.
 	 */
-	public static int entityBlockLight(int level, BlockPos pos) {
+	public static int entityBlockLight(int level, Entity entity) {
 		if (level >= LightSnapshot.MAX_LIGHT) {
 			return level;
 		}
@@ -61,6 +66,6 @@ public final class LightHooks {
 			return level;
 		}
 
-		return Math.max(level, PackedLight.roundToLevel(snapshot.lightAt(pos.getX(), pos.getY(), pos.getZ())));
+		return Math.max(level, PackedLight.roundToLevel(snapshot.lightAtPoint(entity.getX(), entity.getEyeY(), entity.getZ())));
 	}
 }

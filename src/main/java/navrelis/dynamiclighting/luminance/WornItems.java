@@ -1,7 +1,6 @@
 package navrelis.dynamiclighting.luminance;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import navrelis.dynamiclighting.DynamicLighting;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
@@ -10,18 +9,23 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Light of the items a player wears in Accessories and Trinkets slots.
  * <p>
- * Both mods are asked if both are installed. Each one is only touched if it is installed, and the
- * first failure of any kind (an exception, a changed API) switches that integration off for the
- * rest of the session with one log line. Asking is not free on their side, so the result is kept
- * per player for a few ticks. Client thread only.
+ * Both mods are asked if both are installed. Each one is only touched if it is installed, and
+ * each is guarded by a {@link WornSource}, which switches it off after repeated failures. Asking is
+ * not free on their side, so the result is kept per player for a few ticks. Client thread only.
  */
 final class WornItems {
 	/** How long, in ticks, a result is reused. */
 	static final int LIFETIME = 10;
 	private static final int MAX_CACHED_PLAYERS = 256;
 
-	private static boolean accessories = FabricLoader.getInstance().isModLoaded("accessories");
-	private static boolean trinkets = FabricLoader.getInstance().isModLoaded("trinkets");
+	// Lambdas, not method references: the compat classes name types of mods that may be missing
+	// and must not be touched before a scan is really made.
+	private static final WornSource ACCESSORIES = new WornSource(
+		"Accessories", FabricLoader.getInstance().isModLoaded("accessories"), (player, items) -> AccessoriesCompat.scan(player, items)
+	);
+	private static final WornSource TRINKETS = new WornSource(
+		"Trinkets", FabricLoader.getInstance().isModLoaded("trinkets"), (player, items) -> TrinketsCompat.scan(player, items)
+	);
 	private static final Int2ObjectOpenHashMap<Cached> CACHE = new Int2ObjectOpenHashMap<>();
 
 	private WornItems() {
@@ -31,7 +35,7 @@ final class WornItems {
 	 * @return luminance 0 to 15 of the brightest worn accessory, 0 without an accessory mod
 	 */
 	static int luminance(Player player, LightRules rules) {
-		if (!accessories && !trinkets) {
+		if (!ACCESSORIES.active() && !TRINKETS.active()) {
 			return 0;
 		}
 
@@ -55,25 +59,7 @@ final class WornItems {
 	}
 
 	private static Cached refresh(Player player, ItemTable items, Cached cached) {
-		int packed = 0;
-
-		if (accessories) {
-			try {
-				packed = merge(packed, AccessoriesCompat.scan(player, items));
-			} catch (Throwable t) {
-				accessories = false;
-				DynamicLighting.LOGGER.warn("Accessories integration switched off after an error: {}", t.toString());
-			}
-		}
-
-		if (trinkets) {
-			try {
-				packed = merge(packed, TrinketsCompat.scan(player, items));
-			} catch (Throwable t) {
-				trinkets = false;
-				DynamicLighting.LOGGER.warn("Trinkets integration switched off after an error: {}", t.toString());
-			}
-		}
+		int packed = merge(ACCESSORIES.scan(player, items), TRINKETS.scan(player, items));
 
 		if (cached == null) {
 			if (CACHE.size() >= MAX_CACHED_PLAYERS) {

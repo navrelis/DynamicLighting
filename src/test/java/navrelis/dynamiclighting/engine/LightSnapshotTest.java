@@ -2,8 +2,10 @@ package navrelis.dynamiclighting.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -52,7 +54,7 @@ class LightSnapshotTest {
 			int x = (int) Math.floor(centreX) + random.nextInt(141) - 70;
 			int y = (int) Math.floor(centreY) + random.nextInt(81) - 40;
 			int z = (int) Math.floor(centreZ) + random.nextInt(141) - 70;
-			double expected = bruteForce(count, xs, ys, zs, luminances, falloff, x, y, z);
+			double expected = bruteForce(count, xs, ys, zs, luminances, falloff, x + 0.5, y + 0.5, z + 0.5);
 
 			assertEquals(expected, snapshot.lightAt(x, y, z), EXACT, "at " + x + "," + y + "," + z);
 
@@ -63,15 +65,41 @@ class LightSnapshotTest {
 
 		// The comparison means little unless both lit and dark positions were hit.
 		assertTrue(lit > 1_000 && lit < 39_000, "lit positions: " + lit);
+
+		// The same for exact points anywhere, not only block centres.
+		int litPoints = 0;
+
+		for (int i = 0; i < 40_000; i++) {
+			double x = centreX + (random.nextDouble() - 0.5) * 140.0;
+			double y = centreY + (random.nextDouble() - 0.5) * 80.0;
+			double z = centreZ + (random.nextDouble() - 0.5) * 140.0;
+			double expected = bruteForce(count, xs, ys, zs, luminances, falloff, x, y, z);
+
+			assertEquals(expected, snapshot.lightAtPoint(x, y, z), EXACT, "at " + x + "," + y + "," + z);
+
+			if (expected > 0.0) {
+				litPoints++;
+			}
+		}
+
+		assertTrue(litPoints > 1_000 && litPoints < 39_000, "lit points: " + litPoints);
+
+		// And for each light at its own place, where nothing can be brighter than the limit.
+		for (int i = 0; i < count; i++) {
+			double expected = bruteForce(count, xs, ys, zs, luminances, falloff, xs[i], ys[i], zs[i]);
+
+			assertTrue(expected >= luminances[i]);
+			assertEquals(expected, snapshot.lightAtPoint(xs[i], ys[i], zs[i]), EXACT, "at light " + i);
+		}
 	}
 
-	private static double bruteForce(int count, double[] xs, double[] ys, double[] zs, int[] luminances, double falloff, int x, int y, int z) {
+	private static double bruteForce(int count, double[] xs, double[] ys, double[] zs, int[] luminances, double falloff, double x, double y, double z) {
 		double best = 0.0;
 
 		for (int i = 0; i < count; i++) {
-			double dx = xs[i] - (x + 0.5);
-			double dy = ys[i] - (y + 0.5);
-			double dz = zs[i] - (z + 0.5);
+			double dx = xs[i] - x;
+			double dy = ys[i] - y;
+			double dz = zs[i] - z;
 			best = Math.max(best, luminances[i] - falloff * Math.sqrt(dx * dx + dy * dy + dz * dz));
 		}
 
@@ -91,9 +119,61 @@ class LightSnapshotTest {
 	@Test
 	void noLightsBuildTheSharedEmptySnapshot() {
 		assertSame(LightSnapshot.EMPTY, this.builder.build(0, new double[0], new double[0], new double[0], new int[0], 2.0));
-		// A light that reaches no block centre lights nothing either.
 		assertSame(LightSnapshot.EMPTY, this.one(8.0, 8.0, 8.0, 0, 2.0));
-		assertSame(LightSnapshot.EMPTY, this.one(16.0, 16.0, 16.0, 1, 2.0));
+	}
+
+	@Test
+	void weakLightOnABlockCornerLightsNoBlockButIsThereAtItsOwnPlace() {
+		// Reach 0.5 from a corner where eight sections meet: the nearest block centres are 0.87 away.
+		LightSnapshot snapshot = this.one(16.0, 16.0, 16.0, 1, 2.0);
+
+		for (int x = 14; x <= 17; x++) {
+			for (int y = 14; y <= 17; y++) {
+				for (int z = 14; z <= 17; z++) {
+					assertEquals(0.0, snapshot.lightAt(x, y, z));
+				}
+			}
+		}
+
+		assertEquals(1.0, snapshot.lightAtPoint(16.0, 16.0, 16.0));
+		assertEquals(0.5, snapshot.lightAtPoint(16.25, 16.0, 16.0), EXACT);
+		// On every side of the corner, so in every one of the eight sections.
+		assertEquals(1.0 - 2.0 * Math.sqrt(0.03), snapshot.lightAtPoint(15.9, 15.9, 15.9), EXACT);
+		assertEquals(1.0 - 2.0 * Math.sqrt(0.03), snapshot.lightAtPoint(16.1, 15.9, 16.1), EXACT);
+		assertEquals(1.0 - 2.0 * Math.sqrt(0.03), snapshot.lightAtPoint(15.9, 16.1, 15.9), EXACT);
+		assertEquals(0.0, snapshot.lightAtPoint(16.5, 16.0, 16.0));
+	}
+
+	@Test
+	void pointLookupFloorsNegativeCoordinatesToTheirSection() {
+		LightSnapshot snapshot = this.one(-0.25, -0.25, -0.25, 14, 2.0);
+
+		assertEquals(14.0, snapshot.lightAtPoint(-0.25, -0.25, -0.25));
+		assertEquals(13.0, snapshot.lightAtPoint(-0.75, -0.25, -0.25), EXACT);
+		// Across the border at zero into the next section.
+		assertEquals(13.0, snapshot.lightAtPoint(0.25, -0.25, -0.25), EXACT);
+		assertEquals(14.0 - 2.0 * Math.sqrt(3 * 0.5 * 0.5), snapshot.lightAtPoint(0.25, 0.25, 0.25), EXACT);
+		assertEquals(14.0 - 2.0 * Math.sqrt(3 * 0.25 * 0.25), snapshot.lightAt(-1, -1, -1), EXACT);
+		assertEquals(0.0, snapshot.lightAtPoint(-7.25, -0.25, -0.25));
+		assertEquals(0.0, snapshot.lightAtPoint(Double.NaN, 0.0, 0.0));
+		assertEquals(0.0, snapshot.lightAtPoint(1.0e300, -1.0e300, 0.0));
+	}
+
+	@Test
+	void lightFarOutsideAnyWorldIsLeftOutWithoutLooping() {
+		double[] xs = {0.5, -3.4e10, 0.5, 0.5};
+		double[] ys = {64.5, 64.5, 1.0e15, 64.5};
+		double[] zs = {0.5, 0.5, 0.5, Double.NEGATIVE_INFINITY};
+		int[] luminances = {14, 15, 15, 15};
+
+		LightSnapshot snapshot = assertTimeoutPreemptively(
+			Duration.ofSeconds(10), () -> new SnapshotBuilder().build(4, xs, ys, zs, luminances, 1.0)
+		);
+
+		assertEquals(14.0, snapshot.lightAt(0, 64, 0), EXACT);
+		// Only the first light is listed anywhere.
+		assertEquals(1, snapshot.lightsInSection(0, 4, 0));
+		assertEquals(0.0, snapshot.lightAtPoint(-3.4e10, 64.5, 0.5));
 	}
 
 	@Test
@@ -163,7 +243,7 @@ class LightSnapshotTest {
 
 	@Test
 	void sectionTableListsOnlySectionsALightCanReach() {
-		// Reach 7.5 from the middle of section 0: the nearest block centre of any neighbour is 8.5 away.
+		// Reach 7.5 from the middle of section 0: every neighbour is 8 blocks away.
 		LightSnapshot middle = this.one(8.0, 8.0, 8.0, 15, 2.0);
 		assertEquals(1, middle.sectionCount());
 		assertEquals(1, middle.lightsInSection(0, 0, 0));

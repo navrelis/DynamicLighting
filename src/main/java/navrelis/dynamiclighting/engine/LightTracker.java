@@ -13,8 +13,8 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
  */
 final class LightTracker {
 	/**
-	 * A block face just outside a light's reach can still sample a lit position, so the sections to
-	 * rebuild are taken from a box this much larger than the reach.
+	 * A block samples the positions next to it, so a section must be rebuilt as soon as the light
+	 * reaches the centre of a block just outside it: half a block beyond its faces.
 	 */
 	static final double REBUILD_MARGIN = 0.5;
 
@@ -104,14 +104,15 @@ final class LightTracker {
 	 * A new source is always published. A known source is published again only if its luminance
 	 * changed or it is further than {@code threshold} blocks from its committed position; smaller
 	 * movements are measured against the committed position, so slow drift adds up. Luminance 0
-	 * removes the source.
+	 * removes the source, and so does a position that is not a number or lies far outside any world
+	 * ({@link Sections#isValidPosition}).
 	 *
 	 * @return whether the set of published lights changed
 	 */
 	boolean update(int id, double x, double y, double z, int luminance, double threshold) {
 		int slot = this.slots.get(id);
 
-		if (luminance <= 0 || !Double.isFinite(x + y + z)) {
+		if (luminance <= 0 || !Sections.isValidPosition(x, y, z)) {
 			if (slot < 0) {
 				return false;
 			}
@@ -233,9 +234,9 @@ final class LightTracker {
 	}
 
 	private void queueSource(int slot) {
-		this.queue.addBox(
+		this.queue.addReach(
 			this.xs[slot], this.ys[slot], this.zs[slot],
-			this.luminances[slot] / this.falloff + REBUILD_MARGIN,
+			this.luminances[slot] / this.falloff, REBUILD_MARGIN,
 			this.minSectionY, this.maxSectionY
 		);
 	}

@@ -4,12 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.TreeSet;
 
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ class LightTrackerTest {
 	private final LightTracker tracker = new LightTracker();
 	private final Set<String> marked = new TreeSet<>();
 	private int markCalls;
+	/** What the fake renderer answers: {@code false} is a section whose first build has not landed. */
+	private boolean rendererTakesRequests = true;
 
 	@BeforeEach
 	void setUp() {
@@ -238,9 +241,9 @@ class LightTrackerTest {
 		this.commit(2, 100.0, 60.0, -30.0, 9);
 		this.commit(3, -7.0, 3.0, 250.0, 15);
 		Set<String> lit = new TreeSet<>();
-		lit.addAll(sections(8.0, 72.0, 8.0, 14 / 2.0 + 0.5));
-		lit.addAll(sections(100.0, 60.0, -30.0, 9 / 2.0 + 0.5));
-		lit.addAll(sections(-7.0, 3.0, 250.0, 15 / 2.0 + 0.5));
+		lit.addAll(sections(8.0, 72.0, 8.0, 14 / 2.0));
+		lit.addAll(sections(100.0, 60.0, -30.0, 9 / 2.0));
+		lit.addAll(sections(-7.0, 3.0, 250.0, 15 / 2.0));
 		assertEquals(0, this.tracker.queue().size());
 
 		this.tracker.switchOff();
@@ -279,7 +282,7 @@ class LightTrackerTest {
 		assertEquals(1.0, LightSnapshot.current().falloff());
 		assertEquals(14.0 - Math.sqrt(10.5 * 10.5 + 0.5), LightSnapshot.current().lightAt(18, 72, 8), EXACT);
 		// Reach 14 plus margin: -6.5..22.5 on X and Z, 57.5..86.5 on Y.
-		assertEquals(sections(8.0, 72.0, 8.0, 14.5), this.flushAll());
+		assertEquals(sections(8.0, 72.0, 8.0, 14.0), this.flushAll());
 		assertEquals(27, this.marked.size());
 
 		this.tracker.setFalloff(2.0);
@@ -334,6 +337,81 @@ class LightTrackerTest {
 	}
 
 	@Test
+	void positionsFarOutsideAnyWorldAreNotLightSources() {
+		// The second value is where the section arithmetic used to run into an endless loop.
+		double[] outside = {3.3e7, -3.4e10, 1.0e15, Double.MAX_VALUE};
+		int id = 0;
+
+		for (double value : outside) {
+			for (double signed : new double[] {value, -value}) {
+				String what = "coordinate " + signed;
+
+				assertTimeoutPreemptively(Duration.ofSeconds(10), () -> {
+					assertFalse(this.tracker.update(1, signed, 72.0, 8.0, 15, THRESHOLD), "x " + what);
+					assertFalse(this.tracker.update(1, 8.0, signed, 8.0, 15, THRESHOLD), "y " + what);
+					assertFalse(this.tracker.update(1, 8.0, 72.0, signed, 15, THRESHOLD), "z " + what);
+				});
+				assertEquals(0, this.tracker.size(), what);
+				assertEquals(0, this.tracker.queue().size(), what);
+				assertFalse(this.tracker.publishIfChanged(), what);
+
+				// A source that is carried out there is removed, and only its old place is rebuilt.
+				for (int axis = 0; axis < 3; axis++) {
+					int source = ++id;
+					double x = axis == 0 ? signed : 8.0;
+					double y = axis == 1 ? signed : 72.0;
+					double z = axis == 2 ? signed : 8.0;
+					this.commit(source, 8.0, 72.0, 8.0, 15);
+
+					assertTimeoutPreemptively(Duration.ofSeconds(10), () -> assertTrue(this.tracker.update(source, x, y, z, 15, THRESHOLD), what));
+					assertFalse(this.tracker.isTracked(source), what);
+					assertEquals(Set.of("0,4,0"), this.flushAll(), what);
+					assertTrue(this.tracker.publishIfChanged(), what);
+					assertSame(LightSnapshot.EMPTY, LightSnapshot.current(), what);
+				}
+			}
+		}
+
+		// The edge of the real world is fine.
+		assertTrue(this.tracker.update(1, 29_999_999.5, 72.0, -29_999_999.5, 15, THRESHOLD));
+		assertTrue(this.tracker.publishIfChanged());
+		assertEquals(15.0, LightSnapshot.current().lightAtPoint(29_999_999.5, 72.0, -29_999_999.5));
+	}
+
+	@Test
+	void levelChangeAlsoDropsRequestsTheRendererHasNotTaken() {
+		this.rendererTakesRequests = false;
+		this.tracker.update(1, 8.0, 72.0, 8.0, 14, THRESHOLD);
+		this.tracker.publishIfChanged();
+		assertEquals(Set.of("0,4,0"), this.flushAll());
+		assertEquals(1, this.tracker.queue().retrying());
+		// Offered again in the next tick.
+		assertEquals(Set.of("0,4,0"), this.flushAll());
+
+		this.tracker.reset();
+
+		assertEquals(0, this.tracker.queue().retrying());
+		assertTrue(this.tracker.queue().isEmpty());
+		assertEquals(Set.of(), this.flushAll());
+		assertEquals(0, this.markCalls);
+	}
+
+	@Test
+	void switchingOffKeepsOfferingSectionsTheRendererHasNotTaken() {
+		this.commit(1, 8.0, 72.0, 8.0, 14);
+		this.rendererTakesRequests = false;
+
+		this.tracker.switchOff();
+		assertEquals(Set.of("0,4,0"), this.flushAll());
+		assertEquals(Set.of("0,4,0"), this.flushAll());
+
+		this.rendererTakesRequests = true;
+		assertEquals(Set.of("0,4,0"), this.flushAll());
+		assertEquals(Set.of(), this.flushAll());
+		assertTrue(this.tracker.queue().isEmpty());
+	}
+
+	@Test
 	void publishedSnapshotsAreCounted() {
 		assertEquals(0, this.tracker.takePublished());
 		this.commit(1, 8.0, 72.0, 8.0, 14);
@@ -361,20 +439,21 @@ class LightTrackerTest {
 		this.tracker.queue().flush(0, 0, 0, Integer.MAX_VALUE, (x, y, z) -> {
 			this.marked.add(x + "," + y + "," + z);
 			this.markCalls++;
+			return this.rendererTakesRequests;
 		});
 		assertEquals(this.markCalls, this.marked.size(), "a section was marked twice");
 		return new TreeSet<>(this.marked);
 	}
 
-	private static Set<String> sections(double x, double y, double z, double extent) {
-		LongOpenHashSet keys = new LongOpenHashSet();
-		Sections.collect(x, y, z, extent, MIN_SECTION_Y, MAX_SECTION_Y, keys);
+	/**
+	 * The sections to rebuild for a light with the given reach, within the level of these tests.
+	 */
+	private static Set<String> sections(double x, double y, double z, double reach) {
 		Set<String> sections = new TreeSet<>();
-
-		for (long key : keys) {
-			sections.add(SectionKey.x(key) + "," + SectionKey.y(key) + "," + SectionKey.z(key));
-		}
-
+		Sections.collect(
+			x, y, z, reach, LightTracker.REBUILD_MARGIN, MIN_SECTION_Y, MAX_SECTION_Y,
+			key -> sections.add(SectionKey.x(key) + "," + SectionKey.y(key) + "," + SectionKey.z(key))
+		);
 		return sections;
 	}
 }

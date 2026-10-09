@@ -8,7 +8,7 @@ package navrelis.dynamiclighting.engine;
  * meshed from one snapshot agrees with everything else meshed from it.
  * <p>
  * Besides the lights it holds an open-addressing hash table from section key to the lights that can
- * reach a block centre in that section. A lookup for a position whose section is not in the table
+ * reach some point of that section. A lookup for a position whose section is not in the table
  * ends after one probe sequence in that table.
  */
 final class LightSnapshot {
@@ -78,7 +78,17 @@ final class LightSnapshot {
 	 * lights do not add up.
 	 */
 	double lightAt(int blockX, int blockY, int blockZ) {
-		long key = SectionKey.ofBlock(blockX, blockY, blockZ);
+		return this.lightAt(SectionKey.ofBlock(blockX, blockY, blockZ), blockX + 0.5, blockY + 0.5, blockZ + 0.5);
+	}
+
+	/**
+	 * Returns the dynamic light, 0 to 15, at an exact point, for example the eyes of an entity.
+	 */
+	double lightAtPoint(double x, double y, double z) {
+		return this.lightAt(SectionKey.ofBlock(floor(x), floor(y), floor(z)), x, y, z);
+	}
+
+	private double lightAt(long key, double x, double y, double z) {
 		long[] table = this.table;
 		int mask = this.mask;
 		int slot = SectionKey.slot(key, this.shift);
@@ -92,7 +102,12 @@ final class LightSnapshot {
 			slot = (slot + 1) & mask;
 		}
 
-		return this.brightest(table[(slot << 1) + 1], blockX + 0.5, blockY + 0.5, blockZ + 0.5);
+		return this.brightest(table[(slot << 1) + 1], x, y, z);
+	}
+
+	private static int floor(double value) {
+		int truncated = (int) value;
+		return value < truncated ? truncated - 1 : truncated;
 	}
 
 	private double brightest(long range, double x, double y, double z) {

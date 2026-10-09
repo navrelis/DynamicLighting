@@ -4,6 +4,9 @@ import static navrelis.dynamiclighting.luminance.TestGame.compile;
 import static navrelis.dynamiclighting.luminance.TestGame.entity;
 import static navrelis.dynamiclighting.luminance.TestGame.item;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,10 +54,24 @@ class LuminanceTest {
 	}
 
 	@BeforeEach
-	@AfterEach
 	void reset() {
 		Options.set(Options.DEFAULT);
 		Luminance.install(CompiledData.EMPTY);
+		Luminance.takeFailure();
+	}
+
+	/**
+	 * {@code ofEntity} never throws, so a rule that blew up would look like one that gave 0. A test
+	 * in which that happened fails here, whatever it asserted.
+	 */
+	@AfterEach
+	void failIfSomethingWasSwallowed() {
+		Throwable swallowed = Luminance.takeFailure();
+		this.reset();
+
+		if (swallowed != null) {
+			fail("Luminance.ofEntity swallowed a failure during this test", swallowed);
+		}
 	}
 
 	/** The glowing option is off by default here: asking a living entity for its outline needs a world. */
@@ -319,7 +336,22 @@ class LuminanceTest {
 	@Test
 	void neverThrows() {
 		assertEquals(0, Luminance.ofEntity(null));
+		// The one test in which a swallowed failure is the point; taking it here keeps the check after the test quiet.
+		assertInstanceOf(NullPointerException.class, Luminance.takeFailure());
+
 		// Still works afterwards.
 		assertEquals(15, Luminance.ofEntity(dropped(new ItemStack(Items.GLOWSTONE))));
+		assertNull(Luminance.takeFailure());
+	}
+
+	@Test
+	void swallowedFailureIsKeptUntilItIsTaken() {
+		Luminance.ofEntity(null);
+		// Later successes and new data do not hide it.
+		Luminance.ofEntity(dropped(new ItemStack(Items.GLOWSTONE)));
+		Luminance.install(CompiledData.EMPTY);
+
+		assertInstanceOf(NullPointerException.class, Luminance.takeFailure());
+		assertNull(Luminance.takeFailure());
 	}
 }
