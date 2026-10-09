@@ -7,3 +7,4 @@
 - 2026-10-09 T2 by lead: architecture and file ownership decided, see decisions.md and plan.md.
 - 2026-10-09 T2a (Sonnet): contract skeleton. Accepted after review: diff and all seven new files read, signatures match the specification, build exit 0.
 - 2026-10-09 T3 (Opus, engine), T4 (Opus, luminance and data), T5 (Sonnet, config and UI) delegated in parallel, each in its own worktree. Running.
+- 2026-10-09 T5 (Sonnet): config and UI. Accepted after review: full diff and all new files read, build exit 0, 57 tests pass. Sodium entry point key and builder calls were verified by the agent against the real Sodium 0.8.13 jar; none of the UI has run in a client yet (checklist moved to T8). Merged into dev (ed05f7d).
