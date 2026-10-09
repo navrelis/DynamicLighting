@@ -1,0 +1,1 @@
+Held, worn and dropped items and many mobs give off light that moves with them. Fabric 1.21.1.

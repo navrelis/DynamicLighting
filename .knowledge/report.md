@@ -21,7 +21,7 @@ The mod is written from scratch under MIT, runs in the Nytheria pack (Fabric 1.2
 - `.../luminance/` (19 classes), `assets/dynamiclighting/dynamiclights/` (17 files): what emits, item table, data reader, worn items.
 - `.../config/`, `.../gui/`, `.../integration/`, `lang/en_us.json`, `lang/de_de.json`: config file, screen, key binding, command, Mod Menu, Sodium.
 - `fabric.mod.json`, `dynamiclighting.mixins.json`, `icon.png`, build files, `LICENSE`.
-- `README.md`, `CHANGELOG.md`, `docs/curseforge-description.md`, `docs/upstream-study.md`.
+- `README.md`, `CHANGELOG.md`, `docs/curseforge/` (summary, description, logo), `docs/upstream-study.md`.
 - `src/test/`: 249 tests in 19 suites.
 - `graphify-out/`: knowledge graph (1067 nodes, 3122 edges), built at the end, cache not committed.
 
@@ -73,14 +73,14 @@ Scene: flat world at midnight, 64x4x64 field of leaves. Easy = sprinting with a 
 
 ## Known limits and recommendations
 - Under Sodium light moves in whole levels (Sodium keeps four bits). A Sodium-internal vertex-light hook could fix it, at the price of depending on Sodium internals.
-- A stricter rebuild cap under load (for example each section at most every second tick at 60 fps) would raise the frame rate in heavy scenes; lights there would update 10 instead of 20 times a second. Offered to the owner, not done.
+- A stricter rebuild cap under load was offered and declined by the owner: the update rate stays as it is.
 - The frame-rate budget uses the raw frame rate, so a 60 fps cap gives 60 % of the budget. It only matters in very heavy scenes.
 - Rules keep registry references of the previous server until the next world join (no world or entity is held).
 - No coloured light, no beacon / guardian beam lights, no particle lights, no per-entity-type screen (`disabled_entity_types` is file-only).
-- `dev` is not merged into `main`. No CurseForge upload was done; description text is in `docs/curseforge-description.md`.
+- `dev` is not merged into `main`. No CurseForge upload was done; summary, description and logo are in `docs/curseforge/`.
 
 ## Left on the machine
-- Throwaway worlds `PerfTest-dynlight` and `PerfTest-dynbench` in the instance's `saves` (removal needs the owner's yes).
+- The throwaway worlds `PerfTest-dynlight` and `PerfTest-dynbench` were moved to the Recycle Bin on the owner's word.
 - `config/dynamiclighting.json` in the instance (defaults).
 - The pack repository (`navrelis/Nytheria`) shows the new jar as untracked; it belongs to session S2 and was not committed from here.
 - Harness results under `F:\Coding\NytheriaDevelopment\.dev\perf\runtime\client\results\20261009-*` (labels `dynlight-*`, `dynbench-*`).

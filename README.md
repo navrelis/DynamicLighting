@@ -81,7 +81,7 @@ Entities:
 | Block display, item display | the light of the block or item, unless the display has a brightness override |
 | Friends and Foes wildfire | 10, 4 when wet |
 
-Items that go out in water stay dark while the holder's eyes are under water (for dropped items: while the item is in water), if the option "Water Sensitivity" is on.
+The items that go out in water (torch, soul torch, campfire, soul campfire and fire charge) stay dark while the holder's eyes are under water (for dropped items: while the item is in water), if the option "Water Sensitivity" is on.
 
 Items and entities from other mods are covered through data files, see [For pack and mod authors](#for-pack-and-mod-authors).
 
@@ -110,13 +110,13 @@ Between 32 and 64 blocks an entity is checked half as often, beyond 64 blocks a 
 | Light Range | `range` | `short`, `long` | `short` | Short loses 2 light levels per block, long loses 1. Long reaches further and rebuilds more chunk sections. |
 | Own Light | `self_light` | `true`, `false` | `true` | The items you hold and wear, and your own player's other lights, light up your surroundings. |
 | Entity Lights | `entity_lights` | `true`, `false` | `true` | Other players, mobs, dropped items and projectiles give off light. |
-| Water Sensitivity | `water_sensitive` | `true`, `false` | `true` | Torches and other fire-based items go out under water. |
+| Water Sensitivity | `water_sensitive` | `true`, `false` | `true` | Torch, soul torch, campfire, soul campfire and fire charge go out under water. |
 | Glowing Entities | `glowing_entities` | `true`, `false` | `true` | Living entities with the glowing outline give off light. |
 | Creeper Light | `creeper` | `off`, `simple`, `fancy` | `simple` | Light of a creeper that is about to explode. Simple shines steadily, Fancy grows brighter as it swells. |
 | TNT Light | `tnt` | `off`, `simple`, `fancy` | `simple` | Light of lit TNT. Simple shines steadily, Fancy grows brighter as the fuse burns down. |
 | (config file only) | `disabled_entity_types` | list of entity type ids | `[]` | Entity types that never emit light. See below. |
 
-Option changes apply at once.
+Changes made in the mod's own screen and with the key binding apply at once. On Sodium's page they apply when you press Sodium's Apply button.
 
 ### Opening the settings
 
