@@ -40,3 +40,4 @@
 - Per-entity-type switches exist in the config file only (`disabled_entity_types`); no searchable list screen in 1.0.0.
 - The engine keeps ticking while the game is paused: the options screen pauses single player, and option changes must show at once (corrects the first instruction for T3).
 - No performance claim against LambDynamicLights is made in README, description or report unless a measurement supports it: the first quick comparison showed no advantage and a deficit with 256 moving lights.
+- Rebuild volume is the cost that matters (Flight Recorder: over 80 % of samples in a 256-light scene are re-meshing, our own code under 2 %): sections holding only air are never marked, and the per-tick budget shrinks below 90 fps. The scale uses the raw frame rate, so a frame cap lowers the budget too; accepted, because one moving light needs about 6 sections per tick.
