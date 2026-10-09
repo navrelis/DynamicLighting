@@ -1,0 +1,19 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:mod_loaded",
+      "modid": "present_mod"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "present_mod"
+    }
+  ],
+  "match": {
+    "items": "minecraft:candle"
+  },
+  "luminance": 8,
+  "water_sensitive": true
+}

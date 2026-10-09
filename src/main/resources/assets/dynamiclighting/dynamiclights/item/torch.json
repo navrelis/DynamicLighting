@@ -1,0 +1,9 @@
+{
+	"match": {
+		"items": "minecraft:torch"
+	},
+	"luminance": {
+		"type": "block_self"
+	},
+	"water_sensitive": true
+}

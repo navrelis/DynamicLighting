@@ -1,0 +1,7 @@
+{
+  "match": {
+    "items": "minecraft:golden_sword"
+  },
+  "luminance": 9,
+  "water_sensitive": false
+}
