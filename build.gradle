@@ -1,0 +1,115 @@
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = 'dynamiclighting'
+}
+
+repositories {
+	mavenCentral()
+
+	// Optional integrations. Each repository only serves the groups listed in its content filter.
+	maven {
+		name = 'CaffeineMC'
+		url = 'https://maven.caffeinemc.net/releases/'
+		content {
+			includeGroup 'net.caffeinemc'
+		}
+	}
+	maven {
+		name = 'TerraformersMC'
+		url = 'https://maven.terraformersmc.com/releases/'
+		content {
+			includeGroup 'com.terraformersmc'
+			includeGroup 'dev.emi'
+		}
+	}
+	maven {
+		name = 'WispForest'
+		url = 'https://maven.wispforest.io/releases'
+		content {
+			includeGroup 'io.wispforest'
+			includeGroup 'io.wispforest.endec' // pulled in by owo-lib, which Accessories depends on
+		}
+	}
+	maven {
+		name = 'Ladysnake'
+		url = 'https://maven.ladysnake.org/releases'
+		content {
+			includeGroup 'org.ladysnake.cardinal-components-api' // required by Trinkets
+		}
+	}
+}
+
+loom {
+	mods {
+		"dynamiclighting" {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Optional integrations: compile-only, never bundled, never on the runtime classpath.
+	modCompileOnly "net.caffeinemc:sodium-fabric-api:${project.sodium_version}"
+	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modCompileOnly "io.wispforest:accessories-fabric:${project.accessories_version}"
+	modCompileOnly "dev.emi:trinkets:${project.trinkets_version}"
+
+	testImplementation "org.junit.jupiter:junit-jupiter:${project.junit_version}"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+
+	// Boots Fabric Loader (and therefore the mixins) inside a plain JUnit run.
+	testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+}
+
+test {
+	useJUnitPlatform()
+
+	// Keep loader/bootstrap scratch files (logs, .fabric, config) out of the project root.
+	workingDir = layout.buildDirectory.dir("test-run").get().asFile
+	doFirst {
+		workingDir.mkdirs()
+	}
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": inputs.properties.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	inputs.property "projectName", project.name
+
+	from("LICENSE") {
+		rename { "${it}_${project.name}"}
+	}
+}

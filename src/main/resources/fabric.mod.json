@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "dynamiclighting",
+	"version": "${version}",
+	"name": "Dynamic Lighting",
+	"description": "Client-side dynamic lights: held items, dropped items and entities that emit light illuminate their surroundings without any server support.",
+	"authors": [
+		"navrelis"
+	],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"navrelis.dynamiclighting.DynamicLighting"
+		]
+	},
+	"mixins": [
+		"dynamiclighting.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"sodium": "*",
+		"modmenu": "*"
+	}
+}
