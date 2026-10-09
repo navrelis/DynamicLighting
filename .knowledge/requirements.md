@@ -28,3 +28,6 @@ Download LambDynamicLights (branch `1.21`) and make it work in the NytheriaDevel
   - GitHub: new public repo `navrelis/DynamicLighting`, default branch `main`, work on `dev`.
   - Pack: lead copies the jar into the instance `mods` under the game lock and launches the client for a smoke test in a throwaway world; the owner's four saves stay untouched. No CurseForge upload; jar plus description text.
   - Graphify: build once at the end, commit without cache.
+
+## Owner, during the work (2026-10-09)
+- Wants to be told how much better the mod is than LambDynamicLights. Lead's answer: design comparison now; a measured comparison needs the official jar for measurement-only runs, which needs the owner's OK (asked, open).

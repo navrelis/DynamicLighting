@@ -44,3 +44,6 @@ logs/
 
 # graphify
 graphify-out/cache/
+
+# claude code agent worktrees
+.claude/
