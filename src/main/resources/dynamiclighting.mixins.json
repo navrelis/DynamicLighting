@@ -3,7 +3,11 @@
 	"minVersion": "0.8",
 	"package": "navrelis.dynamiclighting.mixin",
 	"compatibilityLevel": "JAVA_21",
-	"client": [],
+	"client": [
+		"EntityRendererMixin",
+		"IndigoAoCalculatorMixin",
+		"LevelRendererMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}
