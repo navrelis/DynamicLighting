@@ -1,5 +1,8 @@
 package navrelis.dynamiclighting;
 
+import navrelis.dynamiclighting.config.ConfigManager;
+import navrelis.dynamiclighting.engine.LightEngine;
+import navrelis.dynamiclighting.luminance.Luminance;
 import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,9 @@ public class DynamicLighting implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ConfigManager.init();
+		Luminance.init();
+		LightEngine.init();
 		LOGGER.info("Dynamic Lighting initialised.");
 	}
 }
