@@ -92,11 +92,13 @@ The "Mode" option controls how much work the mod does:
 - Off: no dynamic light at all. Light that was raised is cleared.
 - Fastest, Fast, Fancy: the same light, with different update rates.
 
-| Mode | Entities within 32 blocks of the camera are checked | Chunk sections marked for rebuild per tick |
+| Mode | Entities within 32 blocks of the camera are checked | Chunk sections marked for rebuild per tick, at most |
 | --- | --- | --- |
 | Fancy | every tick | 64 |
 | Fast | every 2nd tick | 32 |
 | Fastest | every 4th tick | 16 |
+
+That limit is lowered when the frame rate is below 90 fps, down to a quarter of it at about 34 fps and below, and chunk sections that hold only air are never rebuilt.
 
 Between 32 and 64 blocks an entity is checked half as often, beyond 64 blocks a quarter as often. A light is only published again after it has moved by `0.5 / (levels lost per block) * (1, 2 or 4 for Fancy, Fast, Fastest) * (1 + distance to camera / 32)` blocks, or when its brightness changed. Fancy without Sodium halves that distance.
 

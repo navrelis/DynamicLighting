@@ -21,6 +21,8 @@ First release. Minecraft 1.21.1, Fabric, client-side only.
 - Config file `config/dynamiclighting.json`, written with defaults on first start. Each key is checked on its own and falls back to its default. A file that is not a JSON object is renamed to `dynamiclighting.json.broken` and replaced by defaults. `disabled_entity_types` switches entity types off and can only be set in the file.
 - Light data files for other mods, in the same locations and shapes that other mods already ship for LambDynamicLights: `assets/<namespace>/dynamiclights/item/*.json` and `.../entity/*.json`. Supports `fabric:load_conditions`, `water_sensitive`, entity `type`, `flags` and `equipment` predicates, and the luminance types `value`, `block`, `block_self`, `water_sensitive`, `wet_sensitive`, `item`, `item_entity`, `item_frame`, `arrow/derived_from_self_item`, `projectile/throwable_item`, `falling_block`, `minecart/display_block`, `enderman`, `glow_squid`, `magma_cube`, `creeper`, `display`, `display/block` and `display/item`. A file with a problem is skipped on its own and reported in the log. A `match` without any constraint and an entity `match` with unsupported keys are rejected. A built-in file covers the Friends and Foes wildfire.
 - Light lookups take no locks. A light is only published again when it has moved far enough to change the picture or its brightness changed.
+- The number of chunk sections rebuilt per tick is lowered when the frame rate is below 90 fps, down to a quarter of the mode's limit at about 34 fps and below.
+- Chunk sections that hold only air are never rebuilt for a light.
 
 ### Known limits
 

@@ -1,6 +1,7 @@
 package navrelis.dynamiclighting.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import navrelis.dynamiclighting.config.LightRange;
 import navrelis.dynamiclighting.config.Mode;
@@ -90,9 +91,75 @@ class TuningTest {
 	}
 
 	@Test
-	void budgetPerMode() {
-		assertEquals(64, Tuning.budget(Mode.FANCY));
-		assertEquals(32, Tuning.budget(Mode.FAST));
-		assertEquals(16, Tuning.budget(Mode.FASTEST));
+	void fullBudgetPerModeAtASmoothFrameRate() {
+		for (int fps : new int[] {90, 91, 120, 144, 260, 1000, Integer.MAX_VALUE}) {
+			assertEquals(64, Tuning.budget(Mode.FANCY, fps), "fps " + fps);
+			assertEquals(32, Tuning.budget(Mode.FAST, fps), "fps " + fps);
+			assertEquals(16, Tuning.budget(Mode.FASTEST, fps), "fps " + fps);
+		}
+	}
+
+	@Test
+	void budgetShrinksWithTheFrameRate() {
+		// 60 % at 60 frames per second.
+		assertEquals(38, Tuning.budget(Mode.FANCY, 60));
+		assertEquals(19, Tuning.budget(Mode.FAST, 60));
+		assertEquals(10, Tuning.budget(Mode.FASTEST, 60));
+
+		// 40 % at 45.
+		assertEquals(26, Tuning.budget(Mode.FANCY, 45));
+		assertEquals(13, Tuning.budget(Mode.FAST, 45));
+		assertEquals(6, Tuning.budget(Mode.FASTEST, 45));
+
+		// 80 % at 75, and just short of everything at 89.
+		assertEquals(51, Tuning.budget(Mode.FANCY, 75));
+		assertEquals(26, Tuning.budget(Mode.FAST, 75));
+		assertEquals(13, Tuning.budget(Mode.FASTEST, 75));
+		assertEquals(63, Tuning.budget(Mode.FANCY, 89));
+	}
+
+	@Test
+	void budgetStopsAtAQuarter() {
+		// The line reaches a quarter at 33.75 frames per second.
+		for (int fps : new int[] {34, 33, 30, 20, 15, 5, 1}) {
+			assertEquals(16, Tuning.budget(Mode.FANCY, fps), "fps " + fps);
+			assertEquals(8, Tuning.budget(Mode.FAST, fps), "fps " + fps);
+			assertEquals(4, Tuning.budget(Mode.FASTEST, fps), "fps " + fps);
+		}
+
+		assertEquals(17, Tuning.budget(Mode.FANCY, 35));
+	}
+
+	@Test
+	void frameRateNotMeasuredYetMeansFullBudget() {
+		for (int fps : new int[] {0, -1, Integer.MIN_VALUE}) {
+			assertEquals(64, Tuning.budget(Mode.FANCY, fps), "fps " + fps);
+			assertEquals(32, Tuning.budget(Mode.FAST, fps), "fps " + fps);
+			assertEquals(16, Tuning.budget(Mode.FASTEST, fps), "fps " + fps);
+		}
+	}
+
+	@Test
+	void budgetNeverFallsWithARisingFrameRateAndNeverBelowTheMinimum() {
+		assertEquals(4, Tuning.MIN_BUDGET);
+
+		for (Mode mode : Mode.values()) {
+			int full = Tuning.budget(mode, 0);
+			int previous = 0;
+
+			for (int fps = 1; fps <= 400; fps++) {
+				int budget = Tuning.budget(mode, fps);
+				String what = mode + " at " + fps + " fps";
+
+				assertTrue(budget >= previous, what + ": " + budget + " after " + previous);
+				assertTrue(budget >= Tuning.MIN_BUDGET, what);
+				assertTrue(budget <= full, what);
+				// Never less than a quarter of what the mode allows.
+				assertTrue(budget * 4 >= full, what);
+				previous = budget;
+			}
+
+			assertEquals(full, previous, mode.toString());
+		}
 	}
 }

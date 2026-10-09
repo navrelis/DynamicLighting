@@ -12,6 +12,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -39,6 +40,7 @@ public final class LightEngine {
 	private static int gridCentreZ;
 	private static int gridRadius;
 	private static int markedDirty;
+	private static int skippedAir;
 
 	private LightEngine() {
 	}
@@ -76,15 +78,17 @@ public final class LightEngine {
 
 		// Publish first: a section marked dirty must be meshed from the new lights.
 		TRACKER.publishIfChanged();
-		flush(client, camera, cameraPos, Tuning.budget(mode));
+		int budget = Tuning.budget(mode, client.getFps());
+		flush(client, camera, cameraPos, budget);
 
 		if (DEBUG && tick % DEBUG_INTERVAL == 0) {
 			DynamicLighting.LOGGER.info(
-				"sources={} litSections={} markedDirty={} snapshots={} queued={} retrying={}",
-				TRACKER.size(), LightSnapshot.current().sectionCount(), markedDirty, TRACKER.takePublished(),
-				TRACKER.queue().size(), TRACKER.queue().retrying()
+				"sources={} litSections={} markedDirty={} skippedAir={} snapshots={} queued={} retrying={} budget={}",
+				TRACKER.size(), LightSnapshot.current().sectionCount(), markedDirty, skippedAir, TRACKER.takePublished(),
+				TRACKER.queue().size(), TRACKER.queue().retrying(), budget
 			);
 			markedDirty = 0;
+			skippedAir = 0;
 		}
 	}
 
@@ -158,6 +162,29 @@ public final class LightEngine {
 	 */
 	private static boolean markDirty(int sectionX, int sectionY, int sectionZ) {
 		Minecraft client = Minecraft.getInstance();
+		ClientLevel level = client.level;
+		// Never loads anything: null unless the chunk is in the client's memory.
+		LevelChunk chunk = level == null ? null : level.getChunkSource().getChunkNow(sectionX, sectionZ);
+
+		if (chunk == null) {
+			// Nothing to rebuild. When the chunk arrives it is built from the current lights.
+			return true;
+		}
+
+		int sectionIndex = chunk.getSectionIndexFromSectionY(sectionY);
+
+		if (sectionIndex < 0 || sectionIndex >= chunk.getSectionsCount()) {
+			return true;
+		}
+
+		if (chunk.getSection(sectionIndex).hasOnlyAir()) {
+			// A section without a single block or fluid has no mesh that could show light. Its
+			// neighbours are asked for on their own, and entities and particles read the lights
+			// directly. This comes before anything else so that such a section is never retried.
+			skippedAir++;
+			return true;
+		}
+
 		boolean outsideGrid = Math.abs((long) sectionX - gridCentreX) > gridRadius || Math.abs((long) sectionZ - gridCentreZ) > gridRadius;
 
 		if (LightHooks.SODIUM_LOADED) {
@@ -167,8 +194,7 @@ public final class LightEngine {
 			// until that build has landed. Where no first build can be in flight there is nothing
 			// to repeat: the section will be built from the current lights when its turn comes.
 			if (!client.levelRenderer.isSectionCompiled(SECTION_ORIGIN.set(sectionX << 4, sectionY << 4, sectionZ << 4))) {
-				ClientLevel level = client.level;
-				return outsideGrid || level == null || !level.getChunkSource().hasChunk(sectionX, sectionZ);
+				return outsideGrid;
 			}
 		} else if (outsideGrid) {
 			// Vanilla wraps a section outside its grid onto an unrelated one inside it, which would
