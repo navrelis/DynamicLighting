@@ -8,3 +8,5 @@
 - 2026-10-09 T2a (Sonnet): contract skeleton. Accepted after review: diff and all seven new files read, signatures match the specification, build exit 0.
 - 2026-10-09 T3 (Opus, engine), T4 (Opus, luminance and data), T5 (Sonnet, config and UI) delegated in parallel, each in its own worktree. Running.
 - 2026-10-09 T5 (Sonnet): config and UI. Accepted after review: full diff and all new files read, build exit 0, 57 tests pass. Sodium entry point key and builder calls were verified by the agent against the real Sodium 0.8.13 jar; none of the UI has run in a client yet (checklist moved to T8). Merged into dev (ed05f7d).
+- 2026-10-09 T3 (Opus): engine. Review: all ten engine classes and three mixins read in full; build exit 0, 76 tests. One correction sent (1 of 3): the tick must not stop while the game is paused, otherwise options changed in the screen do not apply at once (lead's own instruction was wrong). In review.
+- 2026-10-09 T3 correction verified: pause check removed, build exit 0. Accepted and merged into dev (2c409bf). dev with T5 and T3 builds: 132 tests pass.
