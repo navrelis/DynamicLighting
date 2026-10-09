@@ -12,6 +12,12 @@
 	"entrypoints": {
 		"client": [
 			"navrelis.dynamiclighting.DynamicLighting"
+		],
+		"modmenu": [
+			"navrelis.dynamiclighting.integration.ModMenuIntegration"
+		],
+		"sodium:config_api_user": [
+			"navrelis.dynamiclighting.integration.SodiumIntegration"
 		]
 	},
 	"mixins": [

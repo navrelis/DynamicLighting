@@ -1,0 +1,47 @@
+{
+	"dynamiclighting.screen.title": "Dynamic Lighting",
+	"dynamiclighting.screen.reset": "Auf Standard zurücksetzen",
+
+	"dynamiclighting.option.mode": "Modus",
+	"dynamiclighting.option.mode.tooltip": "Hauptschalter und Aktualisierungsrate. „Am schnellsten“ schont die Leistung am meisten, „Schön“ folgt bewegten Lichtern am flüssigsten.",
+	"dynamiclighting.value.mode.off": "Aus",
+	"dynamiclighting.value.mode.fastest": "Am schnellsten",
+	"dynamiclighting.value.mode.fast": "Schnell",
+	"dynamiclighting.value.mode.fancy": "Schön",
+
+	"dynamiclighting.option.range": "Lichtreichweite",
+	"dynamiclighting.option.range.tooltip": "Wie weit dynamisches Licht reicht. „Kurz“ klingt schnell ab. „Lang“ reicht so weit wie eine platzierte Lichtquelle, aktualisiert aber mehr Chunks.",
+	"dynamiclighting.value.range.short": "Kurz",
+	"dynamiclighting.value.range.long": "Lang",
+
+	"dynamiclighting.option.self_light": "Eigenes Licht",
+	"dynamiclighting.option.self_light.tooltip": "Gegenstände, die du hältst oder trägst, erhellen deine Umgebung.",
+
+	"dynamiclighting.option.entity_lights": "Entitätslicht",
+	"dynamiclighting.option.entity_lights.tooltip": "Andere Spieler, Mobs und fallen gelassene Gegenstände geben Licht ab.",
+
+	"dynamiclighting.option.water_sensitive": "Wasserempfindlichkeit",
+	"dynamiclighting.option.water_sensitive.tooltip": "Fackeln und andere Lichter mit Feuer erlöschen unter Wasser.",
+
+	"dynamiclighting.option.glowing_entities": "Leuchtende Entitäten",
+	"dynamiclighting.option.glowing_entities.tooltip": "Lebewesen mit dem Leuchteffekt geben Licht ab.",
+
+	"dynamiclighting.option.creeper": "Creeper-Licht",
+	"dynamiclighting.option.creeper.tooltip": "Licht eines Creepers, der gleich explodiert. „Einfach“ leuchtet gleichmäßig, „Schön“ wird heller, während der Creeper anschwillt.",
+
+	"dynamiclighting.option.tnt": "TNT-Licht",
+	"dynamiclighting.option.tnt.tooltip": "Licht von gezündetem TNT. „Einfach“ leuchtet gleichmäßig, „Schön“ wird heller, je kürzer die Zündschnur wird.",
+
+	"dynamiclighting.value.fuse.off": "Aus",
+	"dynamiclighting.value.fuse.simple": "Einfach",
+	"dynamiclighting.value.fuse.fancy": "Schön",
+
+	"key.categories.dynamiclighting": "Dynamic Lighting",
+	"key.dynamiclighting.toggle_self_light": "Eigenes Licht umschalten",
+	"dynamiclighting.message.self_light.on": "Eigenes Licht an",
+	"dynamiclighting.message.self_light.off": "Eigenes Licht aus",
+
+	"dynamiclighting.sodium.page": "Dynamic Lighting",
+	"dynamiclighting.sodium.group.general": "Allgemein",
+	"dynamiclighting.sodium.group.special": "Besondere Lichter"
+}

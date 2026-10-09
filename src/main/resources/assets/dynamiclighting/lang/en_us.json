@@ -1,1 +1,47 @@
-{}
+{
+	"dynamiclighting.screen.title": "Dynamic Lighting",
+	"dynamiclighting.screen.reset": "Reset to Defaults",
+
+	"dynamiclighting.option.mode": "Mode",
+	"dynamiclighting.option.mode.tooltip": "Master switch and update rate. Fastest is the lightest on performance, Fancy follows moving lights most smoothly.",
+	"dynamiclighting.value.mode.off": "Off",
+	"dynamiclighting.value.mode.fastest": "Fastest",
+	"dynamiclighting.value.mode.fast": "Fast",
+	"dynamiclighting.value.mode.fancy": "Fancy",
+
+	"dynamiclighting.option.range": "Light Range",
+	"dynamiclighting.option.range.tooltip": "How far dynamic light reaches. Short fades out quickly. Long reaches as far as a placed light source, but updates more chunks.",
+	"dynamiclighting.value.range.short": "Short",
+	"dynamiclighting.value.range.long": "Long",
+
+	"dynamiclighting.option.self_light": "Own Light",
+	"dynamiclighting.option.self_light.tooltip": "The items you hold and wear light up your surroundings.",
+
+	"dynamiclighting.option.entity_lights": "Entity Lights",
+	"dynamiclighting.option.entity_lights.tooltip": "Other players, mobs and dropped items give off light.",
+
+	"dynamiclighting.option.water_sensitive": "Water Sensitivity",
+	"dynamiclighting.option.water_sensitive.tooltip": "Torches and other fire-based lights go out under water.",
+
+	"dynamiclighting.option.glowing_entities": "Glowing Entities",
+	"dynamiclighting.option.glowing_entities.tooltip": "Living entities with the glowing effect give off light.",
+
+	"dynamiclighting.option.creeper": "Creeper Light",
+	"dynamiclighting.option.creeper.tooltip": "Light of a creeper that is about to explode. Simple shines steadily, Fancy grows brighter as the creeper swells.",
+
+	"dynamiclighting.option.tnt": "TNT Light",
+	"dynamiclighting.option.tnt.tooltip": "Light of lit TNT. Simple shines steadily, Fancy grows brighter as the fuse burns down.",
+
+	"dynamiclighting.value.fuse.off": "Off",
+	"dynamiclighting.value.fuse.simple": "Simple",
+	"dynamiclighting.value.fuse.fancy": "Fancy",
+
+	"key.categories.dynamiclighting": "Dynamic Lighting",
+	"key.dynamiclighting.toggle_self_light": "Toggle Own Light",
+	"dynamiclighting.message.self_light.on": "Own light on",
+	"dynamiclighting.message.self_light.off": "Own light off",
+
+	"dynamiclighting.sodium.page": "Dynamic Lighting",
+	"dynamiclighting.sodium.group.general": "General",
+	"dynamiclighting.sodium.group.special": "Special Lights"
+}

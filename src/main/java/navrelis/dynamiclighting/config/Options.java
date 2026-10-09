@@ -52,4 +52,46 @@ public record Options(
 	public static void set(Options options) {
 		current = Objects.requireNonNull(options, "options");
 	}
+
+	public Options withMode(Mode value) {
+		return new Options(value, range, entityLights, selfLight, waterSensitive, glowingEntities, creeper, tnt, disabledEntityTypes);
+	}
+
+	public Options withRange(LightRange value) {
+		return new Options(mode, value, entityLights, selfLight, waterSensitive, glowingEntities, creeper, tnt, disabledEntityTypes);
+	}
+
+	public Options withEntityLights(boolean value) {
+		return new Options(mode, range, value, selfLight, waterSensitive, glowingEntities, creeper, tnt, disabledEntityTypes);
+	}
+
+	public Options withSelfLight(boolean value) {
+		return new Options(mode, range, entityLights, value, waterSensitive, glowingEntities, creeper, tnt, disabledEntityTypes);
+	}
+
+	public Options withWaterSensitive(boolean value) {
+		return new Options(mode, range, entityLights, selfLight, value, glowingEntities, creeper, tnt, disabledEntityTypes);
+	}
+
+	public Options withGlowingEntities(boolean value) {
+		return new Options(mode, range, entityLights, selfLight, waterSensitive, value, creeper, tnt, disabledEntityTypes);
+	}
+
+	public Options withCreeper(FuseMode value) {
+		return new Options(mode, range, entityLights, selfLight, waterSensitive, glowingEntities, value, tnt, disabledEntityTypes);
+	}
+
+	public Options withTnt(FuseMode value) {
+		return new Options(mode, range, entityLights, selfLight, waterSensitive, glowingEntities, creeper, value, disabledEntityTypes);
+	}
+
+	/**
+	 * The defaults for every option the config screen shows. The file-only entity type list is kept.
+	 */
+	public Options withScreenDefaults() {
+		return new Options(
+			DEFAULT.mode, DEFAULT.range, DEFAULT.entityLights, DEFAULT.selfLight, DEFAULT.waterSensitive,
+			DEFAULT.glowingEntities, DEFAULT.creeper, DEFAULT.tnt, disabledEntityTypes
+		);
+	}
 }
