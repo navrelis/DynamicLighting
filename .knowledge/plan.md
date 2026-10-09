@@ -13,9 +13,9 @@ Status values: open / in progress / in review / done.
 | T5 | Config and UI (`config/`, `gui/`, `integration/`, `fabric.mod.json`, lang files): validated JSON config, screen on vanilla widgets, key binding, Mod Menu and Sodium entries, English and German | Unit tests for config parsing and validation pass; every option has both translations; entry points verified against the Mod Menu and Sodium jars | T2a | Sonnet | done (in-game checks in T8) |
 | T6 | README, CurseForge description, icon | README states features, options, data-file compatibility, licence; description text in `docs/`; icon referenced in `fabric.mod.json` | T3 to T5 merged | Sonnet | done |
 | T7 | Independent code review of the merged code (threading, leaks, edge cases, leftovers) and fixes | Every confirmed finding fixed or recorded as a known limitation | T3 to T5 merged | Opus | done |
-| T7b | Performance: profile the extreme scene (256 moving lights) with Flight Recorder, fix what the profile shows, repeat the three-way comparison with CPU figures | Profile read; changes reviewed and tested; comparison repeated with nothing else running; result reported as measured, whatever it is | T7 fixes merged | lead + Opus | in progress |
-| T8 | Pack test: jar into the instance under the game lock, client smoke test in a throwaway world | No crash, no mixin error in the log; data files of Amendments and Simply Swords load; checklist items the lead can observe are checked | T6, T7 | lead | open |
-| T9 | Final acceptance: full build and tests, leftovers, Graphify, report, push | Report in `.knowledge/report.md`; `dev` pushed | T8 | lead | open |
+| T7b | Performance: profile the extreme scene (256 moving lights) with Flight Recorder, fix what the profile shows, repeat the three-way comparison with CPU figures | Profile read; changes reviewed and tested; comparison repeated with nothing else running; result reported as measured, whatever it is | T7 fixes merged | lead + Opus | done (result: about 10 % ahead under load, equal in normal play) |
+| T8 | Pack test: jar into the instance under the game lock, client smoke test in a throwaway world | No crash, no mixin error in the log; data files of Amendments and Simply Swords load; checklist items the lead can observe are checked | T6, T7 | lead | done |
+| T9 | Final acceptance: full build and tests, leftovers, Graphify, report, push | Report in `.knowledge/report.md`; `dev` pushed | T8 | lead | done |
 
 Parallel: T3, T4 and T5 run at the same time, each in its own git worktree, on disjoint files. Then T6 with T7.
 

@@ -1,0 +1,614 @@
+{
+  "build.gradle": {
+    "mtime": 1791563359.4777522,
+    "seen": 1791572422.1287289,
+    "ast_hash": "0b03c3b70e29092b1c7ef5afc0414df9",
+    "semantic_hash": ""
+  },
+  "gradlew": {
+    "mtime": 1789997970.3893094,
+    "seen": 1791572422.1287289,
+    "ast_hash": "65578da0358a01f31a6a78dfcf47e2bf",
+    "semantic_hash": ""
+  },
+  "settings.gradle": {
+    "mtime": 1791563311.8427835,
+    "seen": 1791572422.1287289,
+    "ast_hash": "7e7e3d90145664d0b6509b8bb0c7f225",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/DynamicLighting.java": {
+    "mtime": 1791570415.0715892,
+    "seen": 1791572422.1287289,
+    "ast_hash": "7192c6042c330ccdd44c39c31df0769b",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/config/ConfigManager.java": {
+    "mtime": 1791566769.3157325,
+    "seen": 1791572422.1287289,
+    "ast_hash": "8860047f76e45c57703cf38b8b4aa426",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/config/FuseMode.java": {
+    "mtime": 1791565629.4592006,
+    "seen": 1791572422.1287289,
+    "ast_hash": "337e6aea260ee68c5b8b7a3af6fa4de7",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/config/LightRange.java": {
+    "mtime": 1791565630.326177,
+    "seen": 1791572422.1287289,
+    "ast_hash": "a38c56b896738297501021b20d13a650",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/config/Mode.java": {
+    "mtime": 1791565629.0145133,
+    "seen": 1791572422.1287289,
+    "ast_hash": "94663d9b63ce226ff08669ea3233bf89",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/config/Options.java": {
+    "mtime": 1791566769.316732,
+    "seen": 1791572422.1287289,
+    "ast_hash": "bca00c39fa2995856b562aa2e1d47c8f",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/config/OptionsCodec.java": {
+    "mtime": 1791566769.316732,
+    "seen": 1791572422.1287289,
+    "ast_hash": "e59c843c8a391c871bbf5afef1af6016",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/LightEngine.java": {
+    "mtime": 1791571236.6042447,
+    "seen": 1791572422.1287289,
+    "ast_hash": "2f472c185117149bff448816a9eb2ce3",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/LightHooks.java": {
+    "mtime": 1791570415.073093,
+    "seen": 1791572422.1287289,
+    "ast_hash": "f66357148617ce33dd1b592b027e1bb7",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/LightSnapshot.java": {
+    "mtime": 1791570415.073093,
+    "seen": 1791572422.1287289,
+    "ast_hash": "95585c3af6fd58e8ec29010ee1997f88",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/LightTracker.java": {
+    "mtime": 1791570415.0740976,
+    "seen": 1791572422.1287289,
+    "ast_hash": "ae39ffd0b9769c10678bf2bee7a7dd31",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/PackedLight.java": {
+    "mtime": 1791567416.9019306,
+    "seen": 1791572422.1287289,
+    "ast_hash": "847649d7a840e6a50152685b3ad5161f",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/RebuildQueue.java": {
+    "mtime": 1791570415.0740976,
+    "seen": 1791572422.1287289,
+    "ast_hash": "0cf51d4481505037b4d0bc4a499485a9",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/SectionKey.java": {
+    "mtime": 1791567416.9024332,
+    "seen": 1791572422.1287289,
+    "ast_hash": "631556f3f134f2e4d795b9cdfe614d7f",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/Sections.java": {
+    "mtime": 1791570415.0740976,
+    "seen": 1791572422.1287289,
+    "ast_hash": "c418db03f4b8a335af785bad650aaafb",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/SnapshotBuilder.java": {
+    "mtime": 1791570415.0740976,
+    "seen": 1791572422.1287289,
+    "ast_hash": "8cbbd4ced4c870a3809a0eb20a28521a",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/engine/Tuning.java": {
+    "mtime": 1791571236.6047583,
+    "seen": 1791572422.1287289,
+    "ast_hash": "63e1cc2fb023fa79d9e6f71fa47d0756",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/gui/ConfigScreen.java": {
+    "mtime": 1791566769.316732,
+    "seen": 1791572422.1287289,
+    "ast_hash": "8210c5673d7c3bc887a408e924742ace",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/gui/Texts.java": {
+    "mtime": 1791566769.3177316,
+    "seen": 1791572422.1287289,
+    "ast_hash": "73690b348542499cb66b66c7a99f5606",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/gui/UiHooks.java": {
+    "mtime": 1791566769.3177316,
+    "seen": 1791572422.1287289,
+    "ast_hash": "a47f7916838d4b32e676221f0ccc5d4d",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/integration/ModMenuIntegration.java": {
+    "mtime": 1791566769.3177316,
+    "seen": 1791572422.1287289,
+    "ast_hash": "5ceb3933abd74f6e2894bb320e1b2b8e",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/integration/SodiumIntegration.java": {
+    "mtime": 1791566769.3177316,
+    "seen": 1791572422.1287289,
+    "ast_hash": "bb5054afb26b40712c9fbe4a0e0ba436",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/AccessoriesCompat.java": {
+    "mtime": 1791567724.6340077,
+    "seen": 1791572422.1287289,
+    "ast_hash": "3da2c65391207391db71be4c0272609f",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/CompiledData.java": {
+    "mtime": 1791567724.6340077,
+    "seen": 1791572422.1287289,
+    "ast_hash": "be1d33cc582e2e44d2f7b192ba9aa0b2",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/DataCompiler.java": {
+    "mtime": 1791567724.6340077,
+    "seen": 1791572422.1287289,
+    "ast_hash": "f8fc0a5d84b827a62d353888578d160d",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/DataKind.java": {
+    "mtime": 1791567724.6350114,
+    "seen": 1791572422.1287289,
+    "ast_hash": "62bf9cfcc1647b15f09a4bf29198552e",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/DataReader.java": {
+    "mtime": 1791567724.6360116,
+    "seen": 1791572422.1287289,
+    "ast_hash": "00c448329880a7a8ffc8c03dc89ea036",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/EntityLight.java": {
+    "mtime": 1791567724.6360116,
+    "seen": 1791572422.1287289,
+    "ast_hash": "438788a86e425106968d084b1eb2f8e5",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/EntityLights.java": {
+    "mtime": 1791567724.6365154,
+    "seen": 1791572422.1287289,
+    "ast_hash": "5035d1fae561b6dde6c7e6ab93ea3c86",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/EntityRule.java": {
+    "mtime": 1791567724.6365154,
+    "seen": 1791572422.1287289,
+    "ast_hash": "29d1d6ba59122cfea22154a2a21c5140",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/FuseLight.java": {
+    "mtime": 1791567724.6365154,
+    "seen": 1791572422.1287289,
+    "ast_hash": "5ffc643490f69d53aeb308f26071d548",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/ItemRule.java": {
+    "mtime": 1791567724.6365154,
+    "seen": 1791572422.1287289,
+    "ast_hash": "a5a7470adabf1df53a0f64fdd881fc24",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/ItemTable.java": {
+    "mtime": 1791567724.6365154,
+    "seen": 1791572422.1287289,
+    "ast_hash": "8aa90969dee56cf7fbdaeb12b3a85a16",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/LightDataLoader.java": {
+    "mtime": 1791567724.6375184,
+    "seen": 1791572422.1287289,
+    "ast_hash": "7039b72ce9c0ff908afafd60f16230da",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/LightRules.java": {
+    "mtime": 1791567724.6375184,
+    "seen": 1791572422.1287289,
+    "ast_hash": "23b270cc9c1094dae0c7d4391a9c28ea",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/Luminance.java": {
+    "mtime": 1791570415.0750988,
+    "seen": 1791572422.1287289,
+    "ast_hash": "b92eb1a78fc7338ab375100569610396",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/RawFile.java": {
+    "mtime": 1791567724.6375184,
+    "seen": 1791572422.1287289,
+    "ast_hash": "35a99a3050b2ee8bd02b257f7d6aa172",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/SkipReason.java": {
+    "mtime": 1791567724.6375184,
+    "seen": 1791572422.1287289,
+    "ast_hash": "1dc383fd053badd46d0ec107ab1a8d23",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/TrinketsCompat.java": {
+    "mtime": 1791567724.6385229,
+    "seen": 1791572422.1287289,
+    "ast_hash": "9084d39da79c93eb67c0d4374ce2d9e0",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/WornItems.java": {
+    "mtime": 1791570415.0750988,
+    "seen": 1791572422.1287289,
+    "ast_hash": "a2e75a0962271303861ba4fce744553a",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/luminance/WornSource.java": {
+    "mtime": 1791570415.0750988,
+    "seen": 1791572422.1287289,
+    "ast_hash": "b358e25663669d51e55ddd28b1895f22",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/mixin/EntityRendererMixin.java": {
+    "mtime": 1791570415.076098,
+    "seen": 1791572422.1287289,
+    "ast_hash": "ab64af4c4a50d7ed845ec16e85297d37",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/mixin/IndigoAoCalculatorMixin.java": {
+    "mtime": 1791567416.9034364,
+    "seen": 1791572422.1287289,
+    "ast_hash": "4318c23514a734f03c0713e7dc377725",
+    "semantic_hash": ""
+  },
+  "src/main/java/navrelis/dynamiclighting/mixin/LevelRendererMixin.java": {
+    "mtime": 1791567416.9034364,
+    "seen": 1791572422.1287289,
+    "ast_hash": "8753bf316c4675ae9d8b46ba6631e8db",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/entity/compat/friendsandfoes_wildfire.json": {
+    "mtime": 1791567724.6385229,
+    "seen": 1791572422.1287289,
+    "ast_hash": "00df8b1971b3e9333f89e6d0d2cf49c2",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/blaze_powder.json": {
+    "mtime": 1791567724.639523,
+    "seen": 1791572422.1287289,
+    "ast_hash": "ed5d2c78c3f5bf4627918cf7219f7867",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/blaze_rod.json": {
+    "mtime": 1791567724.639523,
+    "seen": 1791572422.1287289,
+    "ast_hash": "5669d2734122e76e8cafe246e11f511d",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/campfire.json": {
+    "mtime": 1791567724.639523,
+    "seen": 1791572422.1287289,
+    "ast_hash": "878ca87f796e46987accfe18c2ae18b7",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/fire_charge.json": {
+    "mtime": 1791567724.639523,
+    "seen": 1791572422.1287289,
+    "ast_hash": "97d956cbfdf9056359acb5f7abcc830a",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/glow_berries.json": {
+    "mtime": 1791567724.639523,
+    "seen": 1791572422.1287289,
+    "ast_hash": "548f0793275f4329c8d855fc3fe33525",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/glow_ink_sac.json": {
+    "mtime": 1791567724.6405241,
+    "seen": 1791572422.1287289,
+    "ast_hash": "dc4bbc0793f3b22bae1990e556383944",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/glow_lichen.json": {
+    "mtime": 1791567724.6405241,
+    "seen": 1791572422.1287289,
+    "ast_hash": "30a147889e4caa9d8b3ff9fc1617f97d",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/glowstone_dust.json": {
+    "mtime": 1791567724.6405241,
+    "seen": 1791572422.1287289,
+    "ast_hash": "e826f5311f95f8cec4b8a56827dae71e",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/lava_bucket.json": {
+    "mtime": 1791567724.6405241,
+    "seen": 1791572422.1287289,
+    "ast_hash": "234e2669405ef7e24652416e7b02b4de",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/magma_cream.json": {
+    "mtime": 1791567724.6405241,
+    "seen": 1791572422.1287289,
+    "ast_hash": "e2beed188682daa7f577a9acdfb9081e",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/nether_star.json": {
+    "mtime": 1791567724.6405241,
+    "seen": 1791572422.1287289,
+    "ast_hash": "7e7940cf617f4668b1e8956bcc8cb089",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/prismarine_crystals.json": {
+    "mtime": 1791567724.6405241,
+    "seen": 1791572422.1287289,
+    "ast_hash": "d3512f840a918f8f5df016a1124c2d2f",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/soul_campfire.json": {
+    "mtime": 1791567724.6420288,
+    "seen": 1791572422.1287289,
+    "ast_hash": "eb40865a91e1a9ebd71793a5d47b64ff",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/soul_torch.json": {
+    "mtime": 1791567724.6420288,
+    "seen": 1791572422.1287289,
+    "ast_hash": "001c45ca28d76442e538ad1e0ca5f3ad",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/spectral_arrow.json": {
+    "mtime": 1791567724.6420288,
+    "seen": 1791572422.1287289,
+    "ast_hash": "884fe856b3975733c991a0b66495bf40",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/dynamiclights/item/torch.json": {
+    "mtime": 1791567724.6420288,
+    "seen": 1791572422.1287289,
+    "ast_hash": "c59de79a15841a909e7c2a5ce8d5846c",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/lang/de_de.json": {
+    "mtime": 1791566769.3187323,
+    "seen": 1791572422.1287289,
+    "ast_hash": "6d2f5984b1b0694bc9e028e8d54ca834",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/lang/en_us.json": {
+    "mtime": 1791566769.3187323,
+    "seen": 1791572422.1287289,
+    "ast_hash": "bb57938c0ed2f01e53e0c0931c29ab64",
+    "semantic_hash": ""
+  },
+  "src/main/resources/dynamiclighting.mixins.json": {
+    "mtime": 1791567416.9034364,
+    "seen": 1791572422.1287289,
+    "ast_hash": "8315c676afabd97e527c82dda72fca90",
+    "semantic_hash": ""
+  },
+  "src/main/resources/fabric.mod.json": {
+    "mtime": 1791568092.5637822,
+    "seen": 1791572422.1287289,
+    "ast_hash": "c00965a822cbdfde4e989301ed33ac6e",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/SmokeTest.java": {
+    "mtime": 1791563327.4152534,
+    "seen": 1791572422.1287289,
+    "ast_hash": "eebe769f189ef77c242081ae2f5a2caf",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/config/ConfigManagerTest.java": {
+    "mtime": 1791566769.3187323,
+    "seen": 1791572422.1287289,
+    "ast_hash": "d04718d7960ae1db96f88ca298762dc7",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/config/LangFilesTest.java": {
+    "mtime": 1791566769.3197315,
+    "seen": 1791572422.1287289,
+    "ast_hash": "c6c449d8470772de26a0aa80bd6bcd5d",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/config/OptionsCodecTest.java": {
+    "mtime": 1791566769.3197315,
+    "seen": 1791572422.1287289,
+    "ast_hash": "df3a150d00c584096927e258ab6a3a99",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/LightHooksTest.java": {
+    "mtime": 1791570415.076098,
+    "seen": 1791572422.1287289,
+    "ast_hash": "a951f1e3dbd45bb3a9f5a38d9de284aa",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/LightSnapshotTest.java": {
+    "mtime": 1791570415.076098,
+    "seen": 1791572422.1287289,
+    "ast_hash": "d5290d678d774a52cbcbf3ec3552a702",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/LightTrackerTest.java": {
+    "mtime": 1791570415.077098,
+    "seen": 1791572422.1287289,
+    "ast_hash": "83c32eecf01e3f5458b889a93bdd8025",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/PackedLightTest.java": {
+    "mtime": 1791567416.9044363,
+    "seen": 1791572422.1287289,
+    "ast_hash": "7b5b602e4a02206bf185aec20dfaab7f",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/RebuildQueueTest.java": {
+    "mtime": 1791570415.077098,
+    "seen": 1791572422.1287289,
+    "ast_hash": "ce94c27588aeae39730c87b2f5b66c1a",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/SectionKeyTest.java": {
+    "mtime": 1791567416.9054391,
+    "seen": 1791572422.1287289,
+    "ast_hash": "996fd9972b23131b1d1f97ec41461b49",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/SectionsTest.java": {
+    "mtime": 1791570415.077098,
+    "seen": 1791572422.1287289,
+    "ast_hash": "f397f93947e526bcb3a16dd27eaa907b",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/engine/TuningTest.java": {
+    "mtime": 1791571236.6047583,
+    "seen": 1791572422.1287289,
+    "ast_hash": "f3cf894f489560620bbeedd95b0e2e17",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/BuiltInDataTest.java": {
+    "mtime": 1791567724.6420288,
+    "seen": 1791572422.1287289,
+    "ast_hash": "74a74b870c7aee78d12f6b37a8c5493b",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/DataFormatTest.java": {
+    "mtime": 1791567724.6430347,
+    "seen": 1791572422.1287289,
+    "ast_hash": "18978d69887956b61168d8a094a9c534",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/DataRobustnessTest.java": {
+    "mtime": 1791567724.6430347,
+    "seen": 1791572422.1287289,
+    "ast_hash": "c0f21d40763f9cd433873abe50da2769",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/FuseLightTest.java": {
+    "mtime": 1791567724.6430347,
+    "seen": 1791572422.1287289,
+    "ast_hash": "f8a10aecc8589e31dc7f782fe2ae6de4",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/ItemTableTest.java": {
+    "mtime": 1791567724.6430347,
+    "seen": 1791572422.1287289,
+    "ast_hash": "f89d8e0606670f3af1d12f779db754c4",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/LuminanceTest.java": {
+    "mtime": 1791570415.0780978,
+    "seen": 1791572422.1287289,
+    "ast_hash": "e88c084936a162ad55b063dfdc3e46d4",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/TestGame.java": {
+    "mtime": 1791567724.6440332,
+    "seen": 1791572422.1287289,
+    "ast_hash": "0b39a03a43da9eb0b6239333dfcf4738",
+    "semantic_hash": ""
+  },
+  "src/test/java/navrelis/dynamiclighting/luminance/WornSourceTest.java": {
+    "mtime": 1791570415.0780978,
+    "seen": 1791572422.1287289,
+    "ast_hash": "e75c2aa7051d471e43a78576c07dc10f",
+    "semantic_hash": ""
+  },
+  "src/test/resources/lightdata/entity/wet_sensitive.json": {
+    "mtime": 1791567724.6440332,
+    "seen": 1791572422.1287289,
+    "ast_hash": "02ed1de5311caf491423c32a4f3cbca6",
+    "semantic_hash": ""
+  },
+  "src/test/resources/lightdata/item/conditions_met.json": {
+    "mtime": 1791567724.6450348,
+    "seen": 1791572422.1287289,
+    "ast_hash": "81163e36de4fe7f73037d44d38948942",
+    "semantic_hash": ""
+  },
+  "src/test/resources/lightdata/item/conditions_not_met.json": {
+    "mtime": 1791567724.6450348,
+    "seen": 1791572422.1287289,
+    "ast_hash": "cf7e9fa76e00d5948ac75753b4890a8d",
+    "semantic_hash": ""
+  },
+  "src/test/resources/lightdata/item/legacy.json": {
+    "mtime": 1791567724.6450348,
+    "seen": 1791572422.1287289,
+    "ast_hash": "5617f4a3b7b711874f6d42d6202b0b9f",
+    "semantic_hash": ""
+  },
+  "src/test/resources/lightdata/item/single_id.json": {
+    "mtime": 1791567724.6450348,
+    "seen": 1791572422.1287289,
+    "ast_hash": "3844cd08f4b239b5b45f0a88a6ab08cd",
+    "semantic_hash": ""
+  },
+  ".knowledge/decisions.md": {
+    "mtime": 1791571250.0806835,
+    "seen": 1791572422.1287289,
+    "ast_hash": "5038f64bbb3ac592b7604e86a4994a65",
+    "semantic_hash": ""
+  },
+  ".knowledge/log.md": {
+    "mtime": 1791572035.6865857,
+    "seen": 1791572422.1287289,
+    "ast_hash": "3d0b580575b0b218279dd5b84265a6d7",
+    "semantic_hash": ""
+  },
+  ".knowledge/plan.md": {
+    "mtime": 1791570429.054757,
+    "seen": 1791572422.1287289,
+    "ast_hash": "9b727c0289087f4f32dc6dd171eb9d83",
+    "semantic_hash": ""
+  },
+  ".knowledge/requirements.md": {
+    "mtime": 1791569451.0596344,
+    "seen": 1791572422.1287289,
+    "ast_hash": "5014344950dcde7b9a43010fcd1c86b4",
+    "semantic_hash": ""
+  },
+  "CHANGELOG.md": {
+    "mtime": 1791571236.6037405,
+    "seen": 1791572422.1287289,
+    "ast_hash": "dc9708d8e6833240c698a38841e6a8f5",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1791571236.6037405,
+    "seen": 1791572422.1287289,
+    "ast_hash": "b091639857c0e8570c25b078115584a6",
+    "semantic_hash": ""
+  },
+  "docs/curseforge-description.md": {
+    "mtime": 1791568179.6130137,
+    "seen": 1791572422.1287289,
+    "ast_hash": "f1afbf93f984ec564f84a111f056c141",
+    "semantic_hash": ""
+  },
+  "docs/upstream-study.md": {
+    "mtime": 1791565301.2961447,
+    "seen": 1791572422.1287289,
+    "ast_hash": "75abaff6eb44560cff56ef4e2e12cf51",
+    "semantic_hash": ""
+  },
+  "src/main/resources/assets/dynamiclighting/icon.png": {
+    "mtime": 1791568087.1362922,
+    "seen": 1791572422.1287289,
+    "ast_hash": "dc83fce68b79e2829b99eaaf97053c2d",
+    "semantic_hash": ""
+  }
+}
